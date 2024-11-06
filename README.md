@@ -51,8 +51,6 @@ spec:
   selfSigned: {}
 ```
 
-### 4.2.
-
 ```
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -82,7 +80,7 @@ spec:
     secretName: root-ca-key-pair  #----(2)
 ```
 
-### 4.3.To verify the ClusterIssuer and Certificate were created correctly
+### 4.2.To verify the ClusterIssuer and Certificate were created correctly
 oc get ClusterIssuer ca-issuer -o yaml
 oc get ClusterIssuer  selfsigned-cluster-issuer -o yaml
 oc get Certificate -n cert-manager -o yaml
