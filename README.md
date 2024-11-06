@@ -10,9 +10,11 @@ All the configurations below are only meant for demonstration purposes and must 
 ### 1.Define a Private Domain that will be configured in the Custom IngressController and to which the Certificates will be served.
 In my case Im using the domain: "mydomain.com"
 
+
 ### 2.Install the cert-manager operator
 e.g. chapter "Installing the cert-manager Operator" of:
 https://docs.openshift.com/rosa/cloud_experts_tutorials/cloud-experts-dynamic-certificate-custom-domain.html
+
 
 ### 3.Create customized IngressController
 apiVersion: operator.openshift.io/v1
@@ -38,7 +40,6 @@ spec:
 ### 4.Create a self-signed CA issuer
 This step will create a self-signed CA certificate, this CA certificate will be used to sign the Certificate requests.
 https://cert-manager.io/docs/configuration/selfsigned/
-
 ### 4.1.
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -80,7 +81,6 @@ oc get Certificate -n cert-manager -o yaml
 
 
 ### 5.Issue the custom IngressController custom Wildcard Certificate
-
 ### 5.1.
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -103,6 +103,7 @@ spec:
 ### 5.2.Check that certificate was created
 oc -n openshift-ingress describe Certificate ingress-wildcard-cert 
 
+
 ### 6.Change the custom IngressController default certificate
 ### 6.1.
 oc patch ingresscontroller.operator custom-domain-ingress \
@@ -115,13 +116,15 @@ This will restart the custom Router pods in the openshift-ingress namespace.
 ### 6.2.Verify the update was effective:
 echo Q | openssl s_client -connect console-openshift-console.${DOMAIN}:443 -showcerts 2>/dev/null | openssl x509 -noout -subject -issuer -enddate
 
-# Testing
+
+# 7.Testing
 The client where the curl was generated is my Laptop. I have established a VPN from my Laptop towards AWS and, for a fast test, added an entry in /etc/hosts containing: hello2.${DOMAIN} pointing to one private IP of the AWS NLB deployed by the custom IC. 
 oc new-project hello-world2
 oc -n hello-world2 new-app --image=docker.io/openshift/hello-openshift
 oc -n hello-world2 create route edge --service=hello-openshift hello-openshift-tls --hostname hello2.${DOMAIN}
 curl -I https://hello2.${DOMAIN} -k
-     
+
+
 # References
 https://docs.openshift.com/container-platform/4.17/security/cert_manager_operator/cert-manager-creating-certificate.html#cert-manager-certificate-ingress_cert-manager-creating-certificate
 https://docs.openshift.com/rosa/cloud_experts_tutorials/cloud-experts-dynamic-certificate-custom-domain.html
