@@ -17,6 +17,7 @@ https://docs.openshift.com/rosa/cloud_experts_tutorials/cloud-experts-dynamic-ce
 
 
 ### 3.Create customized IngressController
+```
 apiVersion: operator.openshift.io/v1
 kind: IngressController
 metadata:
@@ -35,20 +36,24 @@ spec:
         type: AWS
       scope: Internal      #Internal means it is private, i.e. apps are not exposed to internet.
     type: LoadBalancerService
-
+```
 
 ### 4.Create a self-signed CA issuer
 This step will create a self-signed CA certificate, this CA certificate will be used to sign the Certificate requests.
 https://cert-manager.io/docs/configuration/selfsigned/
 ### 4.1.
+```
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: selfsigned-cluster-issuer #----(1)
 spec:
   selfSigned: {}
+```
 
 ### 4.2.
+
+```
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -65,7 +70,9 @@ spec:
     name: selfsigned-cluster-issuer # match (1)
     kind: ClusterIssuer
     group: cert-manager.io
+```
 
+```
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -73,6 +80,7 @@ metadata:
 spec:
   ca:
     secretName: root-ca-key-pair  #----(2)
+```
 
 ### 4.3.To verify the ClusterIssuer and Certificate were created correctly
 oc get ClusterIssuer ca-issuer -o yaml
@@ -82,6 +90,7 @@ oc get Certificate -n cert-manager -o yaml
 
 ### 5.Issue the custom IngressController custom Wildcard Certificate
 ### 5.1.
+```
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -99,6 +108,7 @@ spec:
     kind: ClusterIssuer
     name: ca-issuer
   secretName: ingress-wildcard-tls
+```
 
 ### 5.2.Check that certificate was created
 oc -n openshift-ingress describe Certificate ingress-wildcard-cert 
@@ -129,4 +139,3 @@ curl -I https://hello2.${DOMAIN} -k
 https://docs.openshift.com/container-platform/4.17/security/cert_manager_operator/cert-manager-creating-certificate.html#cert-manager-certificate-ingress_cert-manager-creating-certificate
 https://docs.openshift.com/rosa/cloud_experts_tutorials/cloud-experts-dynamic-certificate-custom-domain.html
 https://developers.redhat.com/learning/learn:openshift:simplify-certificate-management-openshift-across-multiple-architectures/resource/resources:automate-tls-certificate-management-using-cert-manager-operator-openshift?source=sso
-NOTE: Opinions expressed in this blog are my own and do not necessarily reflect that of the company I work for.
