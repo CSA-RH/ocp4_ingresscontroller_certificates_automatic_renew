@@ -3,6 +3,7 @@
 This repository contains an example of managing the wildcard certificate of a custom IngressController using cert-manager.
 
 The Ingress Controller employs a default certificate for secure routes unless a custom certificate is explicitly specified. Here, the objective is to utilize cert-manager to generate a custom certificate issued by a self-signed certificate authority (CA). Subsequently, we will update the ingress controller's default certificate to use this newly generated certificate.
+And For this case The selfsigned CA certificate is a untrusted entity
 
 All the configurations below are only meant for demonstration purposes and must be tweaked to address the particular use case requirements.
 
