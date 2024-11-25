@@ -27,7 +27,7 @@ metadata:
 spec:
   domain: ${DOMAIN}
   defaultCertificate:
-    name: custom-domain-ingress-cert-tls
+    name: ingress-wildcard-tls
   endpointPublishingStrategy:
     loadBalancer:
       dnsManagementPolicy: Unmanaged
